@@ -5,6 +5,7 @@ import com.najot.oddiyauth.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import static com.najot.oddiyauth.enums.Permission.*;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +34,10 @@ public class SecurityConf {
                                 .requestMatchers("/api/v1/admin").hasRole(Role.ADMIN.name())
                                 .requestMatchers("/api/v1/auth").permitAll()
                                 .requestMatchers("/api/v1/home").hasAnyRole(Role.ADMIN.name(),Role.USER.name())
+                                .requestMatchers(HttpMethod.POST,"/api/v1/product").hasAnyAuthority(CREATE_PRODUCT.name())
+                                .requestMatchers(HttpMethod.PUT,"/api/v1/product").hasAnyAuthority(UPDATE_PRODUCT.name())
+                                .requestMatchers(HttpMethod.DELETE,"/api/v1/product").hasAnyAuthority(DELETE_PRODUCT.name())
+                                .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority(READ_PRODUCT.name())
                                 .anyRequest().authenticated()
                         ).httpBasic(Customizer.withDefaults());
 
