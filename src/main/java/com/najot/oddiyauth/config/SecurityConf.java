@@ -28,18 +28,24 @@ public class SecurityConf {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request->
                         request
-                                .requestMatchers("/api/v1/admin").hasRole(Role.ADMIN.name())
-                                .requestMatchers("/api/v1/auth").permitAll()
+                                .requestMatchers("/api/v1/admin").hasRole("ADMIN")
                                 .requestMatchers("/api/v1/home").hasAnyRole(Role.ADMIN.name(),Role.USER.name())
                                 .requestMatchers(HttpMethod.POST,"/api/v1/product").hasAnyAuthority(CREATE_PRODUCT.name())
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/product").hasAnyAuthority(UPDATE_PRODUCT.name())
                                 .requestMatchers(HttpMethod.DELETE,"/api/v1/product").hasAnyAuthority(DELETE_PRODUCT.name())
                                 .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority(READ_PRODUCT.name())
+                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/auth/login").permitAll()
+                                .requestMatchers("/api/v1/auth/login-post").permitAll()
                                 .anyRequest().authenticated()
-                        ).httpBasic(Customizer.withDefaults());
+                        ).formLogin(s->{
+                            s.loginPage("/api/v1/auth/login");
+                        })
+                ;
 
         return http.build();
     }

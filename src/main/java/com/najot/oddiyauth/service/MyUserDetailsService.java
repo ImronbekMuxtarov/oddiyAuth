@@ -15,9 +15,11 @@ public class MyUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository
+        UserDetails user =  userRepository
                 .findByUsername(username)
                 .orElseThrow();
+        System.out.println("bazadan user load qilinmoqda ");
+        return user;
     }
 
 }

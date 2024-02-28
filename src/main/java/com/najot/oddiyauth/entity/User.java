@@ -1,6 +1,5 @@
 package com.najot.oddiyauth.entity;
 
-import com.najot.oddiyauth.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,18 +30,20 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> list = new ArrayList<>();
-        role.getPermissions().stream()
-                        .peek(permission -> {
-                            list.add(new SimpleGrantedAuthority(permission.name()));
-                        }).collect(Collectors.toList());
 
-        list.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        role.getPermissions().stream()
+                .peek(permission -> {
+                    list.add(new SimpleGrantedAuthority(permission.getPermissionName()));
+                }).collect(Collectors.toList());
+
+        list.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+
         return list;
     }
 

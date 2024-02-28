@@ -4,6 +4,8 @@ import com.najot.oddiyauth.entity.User;
 import com.najot.oddiyauth.repository.UserRepository;
 import com.najot.oddiyauth.service.MyUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 public class MyUserServiceImpl implements MyUserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+
     @Override
     public User create(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -26,5 +30,14 @@ public class MyUserServiceImpl implements MyUserService {
     @Override
     public void DeleteUser(Integer id) {
 
+    }
+
+    @Override
+    public void signIn(String username, String password) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+
+        System.out.println("success");
     }
 }
