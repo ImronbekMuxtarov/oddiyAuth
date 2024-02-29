@@ -1,6 +1,5 @@
 package com.najot.oddiyauth.config;
 
-import com.najot.oddiyauth.enums.Role;
 import com.najot.oddiyauth.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static com.najot.oddiyauth.enums.Permission.*;
 
 @Configuration
 @EnableWebSecurity
@@ -33,11 +31,11 @@ public class SecurityConf {
                 .authorizeHttpRequests(request->
                         request
                                 .requestMatchers("/api/v1/admin").hasRole("ADMIN")
-                                .requestMatchers("/api/v1/home").hasAnyRole(Role.ADMIN.name(),Role.USER.name())
-                                .requestMatchers(HttpMethod.POST,"/api/v1/product").hasAnyAuthority(CREATE_PRODUCT.name())
-                                .requestMatchers(HttpMethod.PUT,"/api/v1/product").hasAnyAuthority(UPDATE_PRODUCT.name())
-                                .requestMatchers(HttpMethod.DELETE,"/api/v1/product").hasAnyAuthority(DELETE_PRODUCT.name())
-                                .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority(READ_PRODUCT.name())
+                                .requestMatchers("/api/v1/home").hasAnyRole("ADMIN","USER")
+                                .requestMatchers(HttpMethod.POST,"/api/v1/product").hasAnyAuthority("CREATE_PRODUCT")
+                                .requestMatchers(HttpMethod.PUT,"/api/v1/product").hasAnyAuthority("UPDATE_PRODUCT")
+                                .requestMatchers(HttpMethod.DELETE,"/api/v1/product").hasAnyAuthority("DELETE_PRODUCT")
+                                .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority("READ_PRODUCT")
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/api/v1/auth/login").permitAll()
                                 .requestMatchers("/api/v1/auth/login-post").permitAll()
