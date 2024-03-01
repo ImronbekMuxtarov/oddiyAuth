@@ -44,16 +44,18 @@ public class SecurityConf {
                         )
                         .formLogin(auth->{
                             auth.loginPage("/api/v1/auth/login-page")
-                                    .successForwardUrl("/api/v1/admin")
+                                    .loginProcessingUrl("/api/v1/auth/login")
+                                    .defaultSuccessUrl("/api/v1/admin")
+                                    .failureUrl("/api/v1/auth/signup-page")
                                     .permitAll();
                         })
                         ;
-//
-//
-//        http.logout(authz -> authz
-//                .deleteCookies("JSESSIONID")
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//        );
+
+
+        http.logout(authz -> authz
+                .deleteCookies("JSESSIONID")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        );
 
 
 
