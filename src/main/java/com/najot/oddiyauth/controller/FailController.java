@@ -1,14 +1,15 @@
 package com.najot.oddiyauth.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-@RestController
-@RequestMapping("/fail")
+@Controller
 public class FailController {
-    @GetMapping
-    public String fail(){
-        return "Fail";
+    @RequestMapping("/fail")
+    public ModelAndView fail(){
+        ModelAndView mv = new ModelAndView("fail");
+        return mv;
     }
 }

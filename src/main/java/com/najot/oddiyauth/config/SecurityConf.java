@@ -13,9 +13,11 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
@@ -27,23 +29,33 @@ public class SecurityConf {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request->
                         request
+                                .requestMatchers("/api/v1/auth/signup").permitAll()
+                                .requestMatchers("/api/v1/auth/signup-page").permitAll()
+                                .requestMatchers("/api/v1/auth/login").permitAll()
+                                .requestMatchers("/api/v1/auth/login-page/**").permitAll()
+                                .requestMatchers("/api/v1/home").permitAll()
+                                .requestMatchers("/views/**").permitAll()
                                 .requestMatchers("/api/v1/admin").hasRole("ADMIN")
-                                .requestMatchers("/api/v1/home").hasAnyRole("ADMIN","USER")
                                 .requestMatchers(HttpMethod.POST,"/api/v1/product").hasAnyAuthority("CREATE_PRODUCT")
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/product").hasAnyAuthority("UPDATE_PRODUCT")
                                 .requestMatchers(HttpMethod.DELETE,"/api/v1/product").hasAnyAuthority("DELETE_PRODUCT")
                                 .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority("READ_PRODUCT")
-                                .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/v1/auth/login").permitAll()
-                                .requestMatchers("/api/v1/auth/login-post").permitAll()
                                 .anyRequest().authenticated()
-                        ).formLogin(s->{
-                            s.loginPage("/api/v1/auth/login");
-                        })
-                ;
+                        )
+                        .formLogin()
+                        .loginPage("/api/v1/auth/login-page")
+                        .permitAll();
+//
+//
+//        http.logout(authz -> authz
+//                .deleteCookies("JSESSIONID")
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//        );
+
 
         return http.build();
     }

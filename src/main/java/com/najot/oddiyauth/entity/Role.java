@@ -21,7 +21,4 @@ public class Role {
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},
             fetch = FetchType.EAGER)
     private List<Permission> permissions;
-
-    @OneToMany(mappedBy = "role", cascade = {CascadeType.ALL})
-    private List<User> users;
 }

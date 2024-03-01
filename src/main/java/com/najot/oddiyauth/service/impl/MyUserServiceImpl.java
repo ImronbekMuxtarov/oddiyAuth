@@ -6,6 +6,7 @@ import com.najot.oddiyauth.service.MyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,9 +35,10 @@ public class MyUserServiceImpl implements MyUserService {
 
     @Override
     public void signIn(String username, String password) {
-        authenticationManager.authenticate(
+         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
+
 
         System.out.println("success");
     }
