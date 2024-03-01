@@ -27,28 +27,33 @@ public class AuthController {
         return mv;
     }
     @RequestMapping(value = URL + "/signup",method = RequestMethod.POST)
-    public ModelAndView signUp(@RequestParam("username") String username,@RequestParam("password") String password){
+    public ModelAndView signUp(@RequestParam("username") String username,
+                               @RequestParam("password") String password,
+                               @RequestParam("role") String roleName
+    ){
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         Role role = new Role();
-        role.setRoleName("ADMIN");
+        role.setRoleName(roleName);
+
         ArrayList<Permission> permissions = new ArrayList<>();
         Permission permission = new Permission();
         permission.setPermissionName("CREATE_PRODUCT");
         permissions.add(permission);
+
+        role.setPermissions(permissions);
         user.setRole(role);
         user = myUserService.create(user);
-        ModelAndView mv = new ModelAndView("redirect:/api/v1/home");
+        ModelAndView mv = new ModelAndView("redirect:/api/v1/auth/login-page");
         mv.addObject("user",user);
         return mv;
     }
 
     @RequestMapping(value = URL + "/login",method = RequestMethod.POST)
-    public ModelAndView signIn(@RequestBody LoginDTO loginDTO){
-        myUserService.signIn(loginDTO.getUsername(), loginDTO.getPassword());
-        ModelAndView mv = new ModelAndView("redirect:/api/v1/home");
-        return mv;
+    public void signIn(@RequestParam("username") String username, @RequestParam("password") String password){
+        myUserService.signIn(username, password);
+        System.out.println("logged in");
     }
     @RequestMapping(value = URL + "/login-page",method = RequestMethod.GET)
     public ModelAndView signIn(){

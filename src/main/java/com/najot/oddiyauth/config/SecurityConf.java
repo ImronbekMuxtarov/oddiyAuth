@@ -39,22 +39,22 @@ public class SecurityConf {
                                 .requestMatchers("/api/v1/auth/login-page/**").permitAll()
                                 .requestMatchers("/api/v1/home").permitAll()
                                 .requestMatchers("/views/**").permitAll()
-                                .requestMatchers("/api/v1/admin").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST,"/api/v1/product").hasAnyAuthority("CREATE_PRODUCT")
-                                .requestMatchers(HttpMethod.PUT,"/api/v1/product").hasAnyAuthority("UPDATE_PRODUCT")
-                                .requestMatchers(HttpMethod.DELETE,"/api/v1/product").hasAnyAuthority("DELETE_PRODUCT")
-                                .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority("READ_PRODUCT")
+                                .requestMatchers("/api/v1/admin").hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
                         )
-                        .formLogin()
-                        .loginPage("/api/v1/auth/login-page")
-                        .permitAll();
+                        .formLogin(auth->{
+                            auth.loginPage("/api/v1/auth/login-page")
+                                    .successForwardUrl("/api/v1/admin")
+                                    .permitAll();
+                        })
+                        ;
 //
 //
 //        http.logout(authz -> authz
 //                .deleteCookies("JSESSIONID")
 //                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 //        );
+
 
 
         return http.build();
